@@ -1,4 +1,5 @@
-const fs = require('fs')
+const path = require('path')
+const readFileByLine = require('../../../utils/read-file-by-line')
 
 const splitPattern = (pattern = '') => {
   const {groups} = pattern.match(/^(?<l>\d+)x(?<w>\d+)x(?<h>\d+)$/) || {}
@@ -22,19 +23,11 @@ function getWrappedPaperSquare(str) {
 }
 
 function getTotalByList() {
-  const lineReader = require('readline').createInterface({
-    input: require('fs').createReadStream('./list.txt')
-  })
-
   let acc = 0
-  
-  lineReader.on('line', function (line) {
-    console.log('BOX with:', line);
 
+  readFileByLine(path.resolve(__dirname, './list.txt'), (line) => {
     acc += getWrappedPaperSquare(line)
-  })
-
-  lineReader.on('close', () => {
+  }).then(() => {
     console.log(acc)
   })
 }
